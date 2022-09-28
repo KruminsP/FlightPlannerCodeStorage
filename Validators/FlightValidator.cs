@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Channels;
-using FlightPlanner.Exceptions;
+﻿using FlightPlanner.Exceptions;
 
 namespace FlightPlanner.Validators
 {
@@ -8,7 +6,9 @@ namespace FlightPlanner.Validators
     {
         public static void Validator(Flight flight)
         {
-            if (string.IsNullOrEmpty(flight.ArrivalTime) ||
+            if (flight.From == null ||
+                flight.To == null ||
+                string.IsNullOrEmpty(flight.ArrivalTime) ||
                 string.IsNullOrEmpty(flight.Carrier) ||
                 string.IsNullOrEmpty(flight.DepartureTime) ||
                 string.IsNullOrEmpty(flight.From.AirportCode) ||

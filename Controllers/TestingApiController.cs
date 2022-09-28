@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanner.Controllers
 {
@@ -12,7 +11,6 @@ namespace FlightPlanner.Controllers
         public IActionResult Clear()
         {
             FlightStorage.Clear();
-            //Todo: clear flight list
             return Ok();
         }
     }

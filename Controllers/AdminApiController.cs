@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using FlightPlanner.Exceptions;
 using FlightPlanner.Validators;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanner.Controllers
@@ -22,7 +18,7 @@ namespace FlightPlanner.Controllers
             {
                 return NotFound();
             }
-
+            
             return Ok(flight);
         }
 
@@ -44,7 +40,7 @@ namespace FlightPlanner.Controllers
                 return BadRequest("Airport of departure and arrival cannot be the same");
             }
 
-            if (InvalidTimeValidator.Validator(flight))
+            if (TimeValidator.Validator(flight))
             {
                 return BadRequest("Invalid arrival or departure times");
             }
@@ -63,7 +59,7 @@ namespace FlightPlanner.Controllers
         public IActionResult DeleteFlight(int id)
         {
             FlightStorage.DeleteFlight(id);
-            return Ok();
+            return Ok("Deleted");
         }
     }
 }

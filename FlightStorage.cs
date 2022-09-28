@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FlightPlanner
@@ -18,6 +19,38 @@ namespace FlightPlanner
         public static Flight GetFlight(int id)
         {
             return _flights.FirstOrDefault(first => first.Id == id);
+        }
+
+        public static List<Flight> GetAllFlights(SearchFlightsRequest req)
+        {
+            return _flights.Where(flight =>
+                flight.From.AirportCode == req.From &&
+                flight.To.AirportCode == req.To &&
+                DateTime.Parse(flight.DepartureTime).Date == DateTime.Parse(req.DepartureDate).Date).ToList();
+        }
+
+        public static HashSet<Airport> SearchAirports(string input)
+        {
+            var returnList = new HashSet<Airport>();
+            input = input.Trim().ToLower();
+
+            foreach (var flight in _flights)
+            {
+                if (flight.From.AirportCode.ToLower().Contains(input) ||
+                    flight.From.City.ToLower().Contains(input) ||
+                    flight.From.Country.ToLower().Contains(input))
+                {
+                    returnList.Add(flight.From);
+                }
+
+                if (flight.To.AirportCode.ToLower().Contains(input) ||
+                    flight.To.City.ToLower().Contains(input) ||
+                    flight.To.Country.ToLower().Contains(input))
+                {
+                    returnList.Add(flight.To);
+                }
+            }
+            return returnList;
         }
 
         public static void Clear()
@@ -45,7 +78,7 @@ namespace FlightPlanner
                     return true;
                 }
             }
-            
+
             return false;
         }
     }

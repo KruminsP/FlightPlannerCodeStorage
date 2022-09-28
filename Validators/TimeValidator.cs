@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace FlightPlanner.Validators
 {
-    public static class InvalidTimeValidator
+    public static class TimeValidator
     {
         public static bool Validator(Flight flight)
         {
