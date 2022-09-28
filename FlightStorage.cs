@@ -11,8 +11,8 @@ namespace FlightPlanner
 
         public static Flight AddFlight(Flight flight)
         {
-            flight.Id = ++_id;
             _flights.Add(flight);
+            flight.Id = ++_id;
             return flight;
         }
 
@@ -21,7 +21,7 @@ namespace FlightPlanner
             return _flights.FirstOrDefault(first => first.Id == id);
         }
 
-        public static List<Flight> GetAllFlights(SearchFlightsRequest req)
+        public static List<Flight> GetRequestedFlights(SearchFlightsRequest req)
         {
             return _flights.Where(flight =>
                 flight.From.AirportCode == req.From &&
@@ -50,6 +50,7 @@ namespace FlightPlanner
                     returnList.Add(flight.To);
                 }
             }
+
             return returnList;
         }
 
@@ -71,9 +72,9 @@ namespace FlightPlanner
             {
                 if (flight.ArrivalTime == storedFlight.ArrivalTime &&
                     flight.DepartureTime == storedFlight.DepartureTime &&
-                    flight.Carrier == storedFlight.Carrier &&
-                    flight.From.AirportCode == storedFlight.From.AirportCode &&
-                    flight.To.AirportCode == storedFlight.To.AirportCode)
+                    flight.Carrier.ToLower() == storedFlight.Carrier.ToLower() &&
+                    flight.From.AirportCode.ToLower() == storedFlight.From.AirportCode.ToLower() &&
+                    flight.To.AirportCode.ToLower() == storedFlight.To.AirportCode.ToLower())
                 {
                     return true;
                 }

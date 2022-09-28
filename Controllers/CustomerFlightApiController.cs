@@ -25,8 +25,8 @@ namespace FlightPlanner.Controllers
                 return BadRequest();
             }
 
-            var x = new PageResult(FlightStorage.GetAllFlights(req));
-            return Ok(x);
+            var pageResult = new PageResult(FlightStorage.GetRequestedFlights(req));
+            return Ok(pageResult);
         }
 
         [Route("flights/{id}")]

@@ -6,9 +6,7 @@ namespace FlightPlanner.Validators
     {
         public static void Validator(Flight flight)
         {
-            if (flight.From == null ||
-                flight.To == null ||
-                string.IsNullOrEmpty(flight.ArrivalTime) ||
+            if (string.IsNullOrEmpty(flight.ArrivalTime) ||
                 string.IsNullOrEmpty(flight.Carrier) ||
                 string.IsNullOrEmpty(flight.DepartureTime) ||
                 string.IsNullOrEmpty(flight.From.AirportCode) ||

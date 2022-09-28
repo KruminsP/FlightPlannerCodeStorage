@@ -9,16 +9,19 @@ namespace FlightPlanner.Controllers
     [ApiController, Authorize]
     public class AdminApiController : ControllerBase
     {
+        private static readonly object _lock = new object();
+
         [Route("flights/{id}")]
         [HttpGet]
         public IActionResult GetFlight(int id)
         {
-            var flight = FlightStorage.GetFlight(id);
+            Flight flight = FlightStorage.GetFlight(id);
+
             if (flight == null)
             {
                 return NotFound();
             }
-            
+
             return Ok(flight);
         }
 
@@ -26,39 +29,43 @@ namespace FlightPlanner.Controllers
         [HttpPut]
         public IActionResult PutFlight(Flight flight)
         {
-            try
+            lock (_lock)
             {
-                FlightValidator.Validator(flight);
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
+                try
+                {
+                    FlightValidator.Validator(flight);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest();
+                }
+
+                if (flight.From.AirportCode.ToLower().Trim() == flight.To.AirportCode.ToLower().Trim() ||
+                    TimeValidator.Validator(flight))
+                {
+                    return BadRequest();
+                }
+
+                if (FlightStorage.FlightExists(flight))
+                {
+                    return Conflict("Flight already exists");
+                }
+
+                flight = FlightStorage.AddFlight(flight);
             }
 
-            if (flight.From.AirportCode.ToLower().Trim() == flight.To.AirportCode.ToLower().Trim())
-            {
-                return BadRequest("Airport of departure and arrival cannot be the same");
-            }
-
-            if (TimeValidator.Validator(flight))
-            {
-                return BadRequest("Invalid arrival or departure times");
-            }
-
-            if (FlightStorage.FlightExists(flight))
-            {
-                return Conflict("Flight already exists");
-            }
-
-            flight = FlightStorage.AddFlight(flight);
-            return Created("",flight);
+            return Created("", flight);
         }
 
         [Route("flights/{id}")]
         [HttpDelete]
         public IActionResult DeleteFlight(int id)
         {
-            FlightStorage.DeleteFlight(id);
+            lock (_lock)
+            {
+                FlightStorage.DeleteFlight(id);
+            }
+
             return Ok("Deleted");
         }
     }
